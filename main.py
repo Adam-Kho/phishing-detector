@@ -1,16 +1,16 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import pickle
 
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn import metrics
 
 # for Naive Bayes
 #from sklearn.naive_bayes import MultinomialNB
 
 # for Logistic Regression
 from sklearn.linear_model import LogisticRegression
-
-from sklearn import metrics
 
 # Confusion Matrix
 from sklearn.metrics import ConfusionMatrixDisplay
@@ -42,6 +42,14 @@ print(X_train_tfidf.shape)
 
 model = LogisticRegression()
 
+with open('vectorizer.pkl', 'wb') as f:
+    pickle.dump(vectorizer, f)
+
+with open('model.pkl', 'wb') as f:
+    pickle.dump(model, f)
+
+print("\nModel & Vectorizer saved.\n")
+
 # model.fit trains the model, looks at TF-IDF numbers alongide the correct labels
 # and learns the patterns that seperate spam vs legit
 model.fit(X_train_tfidf, y_train)
@@ -57,11 +65,16 @@ y_pred = model.predict(X_test_tfidf)
 print(metrics.classification_report(y_test, y_pred))
 
 ConfusionMatrixDisplay.from_predictions(y_test, y_pred).plot()
-plt.show()
+#plt.show()
+
+# 854 legit correctly identified
+# 266 spam correctly caught
+# 2 legit emails flagged as spam, wrong
+# 24 spam emails slipped through, False Negatives (NEED TO IMPROVE)
 
 def predict_email(email_text):
-    email_tfidf = vectorizer.transform([email_text])
-    prediction = model.predict(email_tfidf)
+    email_tfidf = vectorizer.transform([email_text]) # vectorizer hold learned vocab
+    prediction = model.predict(email_tfidf) # holds the learned weights, without you can't make predictions
     probability = model.predict_proba(email_tfidf)
 
     if prediction[0] == 1:
@@ -69,7 +82,7 @@ def predict_email(email_text):
     else:
         print(f"Legit | {probability[0][0]:.0%} confidence.")
 
-
+# tests
 predict_email("Congratulations! You have won a free prize. Click here right now to claim your reward!\n")
 predict_email("CLICK HERE RIGHT NOW TO WIN A FREE CAR. RIGHT NOW. DON'T WANT TO MISS OUT ON A CHANCE TO WIN A CAR!\n")
 predict_email("Hello, I hope you are doing well. Let me know when you are free to book an appointment to more forward with our proposed deal\n")
