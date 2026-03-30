@@ -1,88 +1,50 @@
+# Adam 
+
 import pandas as pd
-import matplotlib.pyplot as plt
-import pickle
-
-from sklearn.model_selection import train_test_split
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn import metrics
-
-# for Naive Bayes
-#from sklearn.naive_bayes import MultinomialNB
-
-# for Logistic Regression
-from sklearn.linear_model import LogisticRegression
-
-# Confusion Matrix
-from sklearn.metrics import ConfusionMatrixDisplay
-
-
-df = pd.read_csv('emails.csv')
-
-print(df.head()) # show first 5 rows
-print(df.shape)  # show (rows, columns)
-print(df['spam'].value_counts()) # 0 = legit | 1 = spam
-
-X = df['text'] # input data, text
-y = df['spam'] # answers, 0 or 1
-# x is like the questions and y is the answers
-
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 42)
-# text_size is .2 meaning 20% test, 80% train
+import train as t
+import predict as p
 
 # confirm sizes of splits
-print(X_train.shape)
-print(X_test.shape)
+# print(X_train.shape)
+# print(X_test.shape)
 
-# can improve this with parameters
-vectorizer = TfidfVectorizer(stop_words='english', lowercase=True, token_pattern=r'[a-zA-Z]+')
-X_train_tfidf = vectorizer.fit_transform(X_train) # learn vocabulary AND convert to numbers
-X_test_tfidf = vectorizer.transform(X_test) # convert only, vocabulary already learned
+# START MENU
 
-print(X_train_tfidf.shape)
+ 
+choice = 0
 
-model = LogisticRegression()
+print("SCAM OR LEGIT ?")
+print("1) Check Email ")
+print("2) Display Dataset ")
+print("3) Display Classification report ")
+print("4) Display Confusion Matrix ")
+print("5) Exit ")
 
-with open('vectorizer.pkl', 'wb') as f:
-    pickle.dump(vectorizer, f)
+choice = int(input("Your Choice: "))
 
-with open('model.pkl', 'wb') as f:
-    pickle.dump(model, f)
+# if choice == 1:
+#     user_email = input("Paste your email below: \n")
+#     p.predict_email(user_email)
+while choice != 5:
+    match choice:
+        case 1:
+            print("Please note, more accuracte scores for longer emails.")
+            user_email = input("Paste your email below: \n")
+            p.predict_email(user_email)
+        case 2:
+            t.display_data(t.df)
+        case 3:
+            t.display_classification()
+        case 4:
+            t.display_confusion()
+        case 5:
+            exit
+    choice = int(input("Your Choice: "))
 
-print("\nModel & Vectorizer saved.\n")
-
-# model.fit trains the model, looks at TF-IDF numbers alongide the correct labels
-# and learns the patterns that seperate spam vs legit
-model.fit(X_train_tfidf, y_train)
-
-y_pred = model.predict(X_test_tfidf)
-
-# Reading Classification Report
-# Columns: precision (correct when flagged) | recall (caught of all actual) | f1-score (balance of both) | support (actual count in test set)
-# Row 0 (legit) : how well model handles legit emails
-# Row 1 (spam) : how well model handles spam emails
-# Accuracy : overall but misleading due to imbalanced dataset
-# PRINTS BELOW
-print(metrics.classification_report(y_test, y_pred))
-
-ConfusionMatrixDisplay.from_predictions(y_test, y_pred).plot()
-#plt.show()
-
-# 854 legit correctly identified
-# 266 spam correctly caught
-# 2 legit emails flagged as spam, wrong
-# 24 spam emails slipped through, False Negatives (NEED TO IMPROVE)
-
-def predict_email(email_text):
-    email_tfidf = vectorizer.transform([email_text]) # vectorizer hold learned vocab
-    prediction = model.predict(email_tfidf) # holds the learned weights, without you can't make predictions
-    probability = model.predict_proba(email_tfidf)
-
-    if prediction[0] == 1:
-        print(f"Spam | {probability[0][1]:.0%} confidence.")
-    else:
-        print(f"Legit | {probability[0][0]:.0%} confidence.")
 
 # tests
-predict_email("Congratulations! You have won a free prize. Click here right now to claim your reward!\n")
-predict_email("CLICK HERE RIGHT NOW TO WIN A FREE CAR. RIGHT NOW. DON'T WANT TO MISS OUT ON A CHANCE TO WIN A CAR!\n")
-predict_email("Hello, I hope you are doing well. Let me know when you are free to book an appointment to more forward with our proposed deal\n")
+# predict_email("Congratulations! You have won a free prize. Click here right now to claim your reward!\n")
+# predict_email("CLICK HERE RIGHT NOW TO WIN A FREE CAR. RIGHT NOW. DON'T WANT TO MISS OUT ON A CHANCE TO WIN A CAR!\n")
+# predict_email("Hello, I hope you are doing well. Let me know when you are free to book an appointment to more forward with our proposed deal\n")
+# TRY THIS
+# This is a scam email, act now to intiate our scam process and we will take all your money.
