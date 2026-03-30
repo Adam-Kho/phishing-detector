@@ -1,4 +1,6 @@
 import pandas as pd
+import matplotlib.pyplot as plt
+
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 
@@ -10,6 +12,8 @@ from sklearn.linear_model import LogisticRegression
 
 from sklearn import metrics
 
+# Confusion Matrix
+from sklearn.metrics import ConfusionMatrixDisplay
 
 
 df = pd.read_csv('emails.csv')
@@ -52,6 +56,8 @@ y_pred = model.predict(X_test_tfidf)
 # PRINTS BELOW
 print(metrics.classification_report(y_test, y_pred))
 
+ConfusionMatrixDisplay.from_predictions(y_test, y_pred).plot()
+plt.show()
 
 def predict_email(email_text):
     email_tfidf = vectorizer.transform([email_text])
