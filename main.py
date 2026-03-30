@@ -52,3 +52,18 @@ y_pred = model.predict(X_test_tfidf)
 # PRINTS BELOW
 print(metrics.classification_report(y_test, y_pred))
 
+
+def predict_email(email_text):
+    email_tfidf = vectorizer.transform([email_text])
+    prediction = model.predict(email_tfidf)
+    probability = model.predict_proba(email_tfidf)
+
+    if prediction[0] == 1:
+        print(f"Spam | {probability[0][1]:.0%} confidence.")
+    else:
+        print(f"Legit | {probability[0][0]:.0%} confidence.")
+
+
+predict_email("Congratulations! You have won a free prize. Click here right now to claim your reward!\n")
+predict_email("CLICK HERE RIGHT NOW TO WIN A FREE CAR. RIGHT NOW. DON'T WANT TO MISS OUT ON A CHANCE TO WIN A CAR!\n")
+predict_email("Hello, I hope you are doing well. Let me know when you are free to book an appointment to more forward with our proposed deal\n")
