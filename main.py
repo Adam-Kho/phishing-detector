@@ -1,5 +1,4 @@
 # Adam 
-
 import pandas as pd
 import train as t
 import predict as p
@@ -9,7 +8,6 @@ import predict as p
 # print(X_test.shape)
 
 # START MENU
-
  
 choice = 0
 
