@@ -38,7 +38,8 @@ while choice != 5:
         case 4:
             t.display_confusion()
         case 5:
-            exit
+            exit()
+
     choice = int(input("Your Choice: "))
 
 
