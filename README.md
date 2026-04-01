@@ -3,7 +3,7 @@
 This program takes a user's email and predicts whether it is spam or legit using a Logistic Regression
 model trained on TF-IDF vectorized text. 
 
-## Pipeline:
+## Pipeline
 1. Load email dataset from csv file
 2. Split data into training (80%) and testing (20%) sets
 3. Vectorize text using TF-IDf > Removes common stopwords, lowercase all characters and converts words into numerical representations
